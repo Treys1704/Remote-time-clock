@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Clock from './components/Clock';
 import TeamList from './components/TeamList';
 import { TeamMember } from './types';
@@ -41,17 +41,28 @@ const teamMembers: TeamMember[] = [
     }
 ];
 
-const DEFAULT_TIME = '15:30';
+function getCurrentTime() {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+}
 
 function App() {
-    const [activeTime, setActiveTime] = useState(DEFAULT_TIME);
+    const [activeTime, setActiveTime] = useState(getCurrentTime());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveTime(getCurrentTime())
+        }, 60000);
+
+        return () => clearInterval(interval)
+    }, []);
 
     const handleHover = (time: string) => {
         setActiveTime(time);
     }
 
     const handleMouseLeave = () => {
-        setActiveTime(DEFAULT_TIME);
+        setActiveTime(getCurrentTime());
     }
 
     return (
